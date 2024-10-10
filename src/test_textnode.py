@@ -153,5 +153,49 @@ class TestTextNode(unittest.TestCase):
                         TextNode("link", text_type_link, "https://boot.dev"),
                     ]
         self.assertEqual(nodes, exp_output)
+        
+    def test_markdown_to_blocks(self):
+        markdown = "# This is heading\n\nThis is a paragraph\n\n* This is first list\n* This is second list"
+        list = markdown_to_blocks(markdown)
+        self.assertEqual(list, ["# This is heading", "This is a paragraph", "* This is first list\n* This is second list"])
+        
+        markdown = "# This is heading   \n\n  This is a paragraph  \n\n* This is first list   \n* This is second list  "
+        list = markdown_to_blocks(markdown)
+        self.assertEqual(list, ["# This is heading", "This is a paragraph", "* This is first list   \n* This is second list"])
+        
+        markdown = "\n# This is heading\n\nThis is a paragraph\n\n* This is first list\n* This is second list"
+        list = markdown_to_blocks(markdown)
+        self.assertEqual(list, ["# This is heading", "This is a paragraph", "* This is first list\n* This is second list"])
+        
+        markdown = "# This is heading\n\nThis is a paragraph\n\n* This is first list\n* This is second list\n"
+        list = markdown_to_blocks(markdown)
+        self.assertEqual(list, ["# This is heading", "This is a paragraph", "* This is first list\n* This is second list"])
+        
+        md = """
+This is **bolded** paragraph
+
+
+
+
+This is another paragraph with *italic* text and `code` here
+This is the same paragraph on a new line
+
+* This is a list
+* with items
+            """
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with *italic* text and `code` here\nThis is the same paragraph on a new line",
+                "* This is a list\n* with items",
+            ],
+        )
+        
+        
 if __name__ == "__main__":
     unittest.main()
+    # markdown = "# This is heading   \n\n  This is a paragraph  \n\n* This is first list   \n  * This is second list  "
+    # list = markdown_to_blocks(markdown)
+    # print(list)
